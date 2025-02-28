@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BeamMP Map Scanner</title>
+    <script src="https://unpkg.com/@zip.js/zip.js@2.7.22/dist/zip.min.js"></script>
+</head>
+<body>
+    <h2>Upload a BeamNG.Drive map</h2>
+    <input type="file" id="fileInput" accept=".zip">
+    <h3>Found Maps:</h3>
+    <ul id="fileList"></ul>
+
+    <script>
+        async function handleFile() {
+            const reader = new zip.ZipReader(new zip.BlobReader(document.getElementById('fileInput').files[0]));
+            
+            const entries = await reader.getEntries();
+            
+            let matches = entries
+                .map(entry => entry.filename)
+                .filter(filename => filename.startsWith('levels/') && filename.split('/').length > 2 && (filename.endsWith('info.json') || filename.endsWith('.mis')));
+            
+            document.getElementById('fileList').innerHTML = matches.length ? matches.map(f => `<li>${f}</li>`).join('') : '<li>No matching files found</li>';
+            reader.close();
+        }
+		
+		document.getElementById("fileInput").addEventListener("change", handleFile);
+    </script>
+</body>
+</html>
