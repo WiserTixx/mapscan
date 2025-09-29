@@ -19,8 +19,14 @@
             
             let matches = entries
                 .map(entry => entry.filename)
-                .filter(filename => filename.startsWith('levels/') && filename.split('/').length > 2 && (filename.endsWith('info.json') || filename.endsWith('.mis')));
-            
+                .filter(filename => {
+                    const parts = filename.split('/');
+                    return ( parts.length === 3 &&
+                        parts[0] === 'levels' &&
+                        (filename.endsWith('info.json') || filename.endsWith('.mis'))
+                    );
+                });
+
             document.getElementById('fileList').innerHTML = matches.length ? matches.map(f => `<li>${f}</li>`).join('') : '<li>No matching files found</li>';
             reader.close();
         }
